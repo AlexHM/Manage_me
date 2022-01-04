@@ -14,3 +14,5 @@ It will be possible to filter expenses, add new expenses and modify existing one
 
 To run the application it is necessary to have an sql server implemented such as xampp or bitnami.
 The application has been created in java, so the JVM will also be necessary to compile and the window builder editor plugin to use Swing.
+
+[Xampp](https://www.apachefriends.org/es/download.html)
