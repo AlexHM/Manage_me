@@ -1,4 +1,5 @@
 package model;
+
 /*
  * @author_>Alejandro Honrubia
 
@@ -10,11 +11,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.swing.JPasswordField;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import views.AddData;
 import views.FilterData;
 import views.Home;
+import views.SignUp;
 import views.UpdateData;
 
 public class Model {
@@ -23,6 +31,7 @@ public class Model {
 	private AddData addData;
 	private FilterData filter = new FilterData();
 	private UpdateData updateData = new UpdateData();
+	private SignUp signup = new SignUp();
 
 	// Attributes connection
 	private String db = "manage-me";
@@ -30,7 +39,6 @@ public class Model {
 	private String dbUser = "root";
 	private String url = "jdbc:mysql://localhost/" + db;
 	private Connection connection;
-	private ResultSet rset;
 
 	// Querys
 	private String sql1 = "select * from gastos;";
@@ -41,11 +49,17 @@ public class Model {
 
 	private DefaultTableModel modelG;
 
+	// Encrypted
+	private KeyGenerator keygen;
+	private SecretKey key;
+	private Cipher aesCipher;
+
 	public void getConnection() {
-		
+
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager.getConnection(url, dbUser, pwd);
+			System.out.println("Connected to SqlServer");
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println("Driver JDBC not found");
 			cnfe.printStackTrace();
@@ -57,9 +71,29 @@ public class Model {
 			e.printStackTrace();
 		}
 	}
+	public String encryptPassword(String password) {
+		String passwordEncrypted = null;
+		try {
+			System.out.println("Obteniendo generador de claves");
+			keygen = KeyGenerator.getInstance("AES");
+			System.out.println("Generando clave");
+			key = keygen.generateKey();
+			System.out.println("Obteniendo objeto Cipher con cifrado AES");
+			Cipher aesCipher = Cipher.getInstance("AES");
+			System.out.println("Configurando Cipher para encriptar");
+			aesCipher.init(Cipher.ENCRYPT_MODE, key);
+			passwordEncrypted = new String(aesCipher.doFinal(password.getBytes()));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return passwordEncrypted;
+	}
+
+	
 
 	public void loadTableOcio(DefaultTableModel model2) {
-		
+
 		int columnsNum = getNumColumns(sql1);
 		int rowsNum = getnumRows(sql1);
 		String[] header = new String[columnsNum];
@@ -85,9 +119,9 @@ public class Model {
 		modelG = new DefaultTableModel(content, header);
 		filter.setTableModel(modelG);
 	}
-	
+
 	private int getNumColumns(String sql) {
-		
+
 		int num = 0;
 		try {
 			PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -101,7 +135,7 @@ public class Model {
 	}
 
 	private int getnumRows(String sql) {
-		
+
 		int num = 0;
 		try {
 			PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -115,7 +149,7 @@ public class Model {
 	}
 
 	public void loadOption(String filter2) {
-		
+
 		String aux = filter.getCbChoosed();
 		if (aux.equalsIgnoreCase(filter.getCbChoosed())) {
 			String query = "select * from gastos where tipo='" + aux + "';";
@@ -149,12 +183,12 @@ public class Model {
 	}
 
 	public void cleanComboboxType() {
-		
+
 		filter.getCbFilter().removeAllItems();
 	}
 
 	public void filcomboType() {
-		
+
 		int columnsNum = getNumColumns(sql5);
 		int rowsNum = getnumRows(sql5);
 		String[] header = new String[columnsNum];
@@ -242,11 +276,11 @@ public class Model {
 
 	}
 
-	public void updateRow(String name, String type, String price, String date,String id) {
-		
+	public void updateRow(String name, String type, String price, String date, String id) {
+
 		try {
 			double aux = Double.parseDouble(price);
-			int aux2=Integer.parseInt(id);
+			int aux2 = Integer.parseInt(id);
 			String query = "update gastos set nombre=?,tipo=?, precio=?, fecha=? where id_gasto=?";
 			PreparedStatement pstmt = connection.prepareStatement(query);
 			pstmt.setString(1, name);
@@ -270,7 +304,7 @@ public class Model {
 			table = filter.getTable();
 			int row = table.getSelectedRow();
 			String value = table.getModel().getValueAt(row, 0).toString();
-			int aux=Integer.parseInt(value);
+			int aux = Integer.parseInt(value);
 			String query = "delete from gastos where id_gasto=?";
 			PreparedStatement pstmt = connection.prepareStatement(query);
 			pstmt.setInt(1, aux);
@@ -279,6 +313,26 @@ public class Model {
 			filter.setLblError("Row deleted successfully");
 		} catch (Exception e) {
 			filter.setLblError("You have not selected anything to remove");
+		}
+
+	}
+
+	public void insertUser(String txtEmail, String txtUsername, char[] txtPassword) {
+
+		String aux = String.valueOf(txtPassword);
+		String query = "insert into users (username,email,password) values(?,?,?);";
+
+		try {
+			getConnection();
+			PreparedStatement pstmt = connection.prepareStatement(query);
+			pstmt.setString(1, txtUsername);
+			pstmt.setString(2, txtEmail);
+			pstmt.setString(3, encryptPassword(aux));
+			pstmt.executeUpdate();
+			System.out.println("Added user successfully");
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}
@@ -299,6 +353,11 @@ public class Model {
 
 	public void SetUpdateData(UpdateData updateData) {
 		this.updateData = updateData;
+	}
+
+	public void setSignUp(SignUp signup) {
+		this.signup = signup;
+
 	}
 
 	public DefaultTableModel getModeloGeneral() {

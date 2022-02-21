@@ -2,7 +2,6 @@ package controller;
 
 /*
  * @author_>Alejandro Honrubia
-
  */
 
 
@@ -10,6 +9,7 @@ import model.Model;
 import views.AddData;
 import views.FilterData;
 import views.Home;
+import views.SignUp;
 import views.UpdateData;
 
 public class Launcher {
@@ -22,7 +22,9 @@ public class Launcher {
 		AddData addData = new AddData();
 		FilterData filterData= new FilterData();
 		UpdateData updateData= new UpdateData();
+		SignUp signup = new SignUp();
 
+		
 		// MVC
 		// controller knows model and views
 		controller.setModel(model);
@@ -30,6 +32,7 @@ public class Launcher {
 		controller.setAddData(addData);
 		controller.setFilterData(filterData);
 		controller.setUpdateData(updateData);
+		controller.setsignup(signup);
 
 
 		// model knows views
@@ -37,6 +40,7 @@ public class Launcher {
 		model.setAddData(addData);
 		model.setFilterData(filterData);
 		model.SetUpdateData(updateData);
+		model.setSignUp(signup);
 
 
 		// views knows model and controller
@@ -48,9 +52,11 @@ public class Launcher {
 		filterData.setModel(model);
 		updateData.setModel(model);
 		updateData.setController(controller);
+		signup.setController(controller);
+		signup.setModel(model);
 
 
-		home.setVisible(true);
+		signup.setVisible(true);
 
 	}
 

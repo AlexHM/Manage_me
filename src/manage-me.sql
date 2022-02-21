@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-06-2021 a las 00:26:36
+-- Tiempo de generación: 19-02-2022 a las 16:10:33
 -- Versión del servidor: 10.4.18-MariaDB
 -- Versión de PHP: 8.0.3
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `manage-me`
 --
-CREATE DATABASE IF NOT EXISTS `manage-me` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `manage-me`;
 
 -- --------------------------------------------------------
 
@@ -38,6 +36,42 @@ CREATE TABLE `gastos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Volcado de datos para la tabla `gastos`
+--
+
+INSERT INTO `gastos` (`id_gasto`, `nombre`, `tipo`, `precio`, `fecha`) VALUES
+(6, 'Hotel Attica21', 'Pruebas', 230.91, '2021-08-26'),
+(23, 'Pasteleria sin gluten', 'restaurante', 14.95, '2021-06-21'),
+(25, 'Aorus x345', 'pruebas2', 45.9, '2021-12-19'),
+(34, 'Restaurante vips', 'Ocio', 45.43, '2021-10-21'),
+(35, 'prueba', 'Prog', 45.78, '2022-01-03'),
+(36, 'Alejandro', 'DotalSoyer', 14.5, '2022-01-02');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `email`, `password`) VALUES
+(1, 'dfadad', 'asdasda', 'adad'),
+(2, 'ash', 'sadgh', '1234'),
+(3, 'ADAD', 'ADAD', 'ò³óc½qÈ\0�¸ueÉ'),
+(4, 'Honrubia', 'Alejandro', 'kŠ\réµ*âÞKï8@héDß'),
+(5, 'fasg', 'sfa', 'Ò‚*E�K­ûê�)Ü5îä÷');
+
+--
 -- Índices para tablas volcadas
 --
 
@@ -48,6 +82,12 @@ ALTER TABLE `gastos`
   ADD PRIMARY KEY (`id_gasto`);
 
 --
+-- Indices de la tabla `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -55,7 +95,13 @@ ALTER TABLE `gastos`
 -- AUTO_INCREMENT de la tabla `gastos`
 --
 ALTER TABLE `gastos`
-  MODIFY `id_gasto` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_gasto` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- AUTO_INCREMENT de la tabla `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

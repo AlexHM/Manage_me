@@ -1,5 +1,8 @@
 package controller;
 
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
 /*
  * @author_>Alejandro Honrubia
 
@@ -11,6 +14,7 @@ import model.Model;
 import views.AddData;
 import views.FilterData;
 import views.Home;
+import views.SignUp;
 import views.UpdateData;
 import views.Views;
 
@@ -21,12 +25,13 @@ public class Controller {
 	private AddData add= new AddData();
 	private FilterData filter= new FilterData();
 	private UpdateData updateData=new UpdateData();
+	private SignUp signup = new SignUp();
 
 	// BUILDER
 
 	public Controller() {
 
-		this.views = new Views[4];
+		this.views = new Views[6];
 		model = new Model();
 	}
 	
@@ -56,6 +61,10 @@ public class Controller {
 
 	public void setUpdateData(UpdateData updateData) {
 		this.views[3]=(Views) updateData;
+	}
+
+	public void setsignup(SignUp signup) {
+		this.views[4] = (Views) signup;
 	}
 
 	public void getConnection() {
@@ -89,4 +98,10 @@ public class Controller {
 	public void updateRow(String name, String type, String price, String date, String id) {
 		model.updateRow(name,type,price,date,id);	
 	}
+
+	public void insertUser(String txtEmail, String txtUsername, char[] txtPassword) {
+		
+		model.insertUser(txtEmail,txtUsername,txtPassword);
+	}
+
 }
